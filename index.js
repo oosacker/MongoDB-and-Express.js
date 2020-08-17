@@ -23,12 +23,26 @@ const assert = require('assert');
 const url = 'mongodb://localhost:27017';
 const dbName = 'fifa19';
 
-MongoClient.connect(url, function(err, client) {
+const findDocuments = (db, callback) => {
+    const collection = db.collection('players');
+    
+    collection.find({"Name": "L. Messi"}).toArray( (err, docs) => {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs)
+      callback(docs);
+    });
+}
+
+MongoClient.connect(url, (err, client) => {
   assert.equal(null, err);
   console.log("Connected successfully to server");
   const db = client.db(dbName);
+  findDocuments(db, () => console.log('done'));
   client.close();
 });
+
+
 
 app.get('/', (req, res) => {
     res.render('index');
